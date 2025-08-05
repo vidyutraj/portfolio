@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lambda Interaction</title>
+    <link rel="stylesheet" href="lambda_styles.css">
+</head>
+<body>
+    <h1>Lambda Response</h1>
+    
+    <h2>Certifications (GET Response)</h2>
+    <div id="get-response">Loading...</div>
+
+    <hr>
+
+    <h2>Send a Name (POST Request)</h2>
+    <form id="nameForm">
+        <input type="text" id="nameInput" placeholder="Enter your name" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="post-response"></div>
+
+    <script>
+        const API_URL = "https://8j6p9789pl.execute-api.us-east-1.amazonaws.com/default/FirstLambdaFunction";
+
+        // GET Request to fetch certifications
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                const certs = data.certifications || [];
+                const container = document.getElementById("get-response");
+                
+                if (certs.length === 0) {
+                    container.textContent = "No certifications found.";
+                    return;
+                }
+
+                container.innerHTML = ""; // clear loading text
+                
+                certs.forEach(cert => {
+                    const certEl = document.createElement("div");
+                    certEl.className = "certification";
+                    certEl.innerHTML = `
+                        <h3><a href="${cert.url}" target="_blank" rel="noopener">${cert.title}</a></h3>
+                        <p><strong>Issuer:</strong> ${cert.issuer}</p>
+                        <p><strong>Date:</strong> ${cert.date}</p>
+                    `;
+                    container.appendChild(certEl);
+                });
+            })
+            .catch(error => {
+                console.error("GET Error:", error);
+                document.getElementById("get-response").textContent = "Failed to fetch certifications.";
+            });
+
+        // POST Request to send name
+        document.getElementById("nameForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const name = document.getElementById("nameInput").value;
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: name })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("post-response").textContent = data.message;
+            })
+            .catch(error => {
+                console.error("POST Error:", error);
+                document.getElementById("post-response").textContent = "Failed to send.";
+            });
+        });
+    </script>
+</body>
+</html>
