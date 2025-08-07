@@ -1,0 +1,40 @@
+# This workflow is a CI/CD pipeline that automatically deploys your static website
+# to an S3 bucket whenever a commit is pushed to the 'main' branch.
+
+name: Deploy to S3
+
+on:
+  # Trigger the workflow on pushes to the main branch
+  push:
+    branches:
+      - main
+
+# Define environment variables for the workflow
+env:
+  S3_BUCKET_NAME: lambda-static-site-vidyut
+  AWS_REGION: us-east-1
+
+# The 'jobs' section defines the work to be done
+jobs:
+  deploy:
+    # Set the runner to use the latest Ubuntu version
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from your repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials using secrets stored in GitHub
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Step 3: Sync the content of your local directory with the S3 bucket
+      # This command will upload all local files to the bucket, overwriting any
+      # existing files and deleting files from S3 that are not in the local directory.
+      - name: Deploy static site to S3
+        run: aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} --delete
