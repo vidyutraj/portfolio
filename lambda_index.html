@@ -2,82 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lambda Interaction</title>
+    <title>Vidyut's Portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #1a1a2e;
+            background-image: radial-gradient(at 50% 10%, #3a3f5a, #1a1a2e);
+            color: #e0e0e0;
         }
         .container {
             max-width: 960px;
             margin: 0 auto;
             padding: 2rem;
         }
-        .section-header {
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
+        .card {
+            background-color: #2a2a44;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+        .btn {
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        input, textarea {
+            background-color: #3b3b55;
+            color: #fff;
+            border: 1px solid #4a4a6e;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #9ca3af;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="container bg-white p-8 rounded-xl shadow-lg space-y-8">
-        <h1 class="text-3xl font-bold text-gray-800 text-center">Cloud Portfolio Demo (LATEST THING BOZO)</h1>
-        
+    <div class="container space-y-12 py-10">
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-white leading-tight mb-4 animate-pulse">Vidyut Rajagopal</h1>
+            <p class="text-xl text-gray-300">Cloud Portfolio & Lambda Demo</p>
+        </header>
+
         <!-- Certifications Section -->
-        <div>
-            <h2 class="text-2xl font-semibold text-gray-700 section-header">Certifications (GET Response)</h2>
-            <div id="get-response" class="space-y-4 p-4 bg-gray-50 rounded-lg text-gray-600">Loading...</div>
+        <div class="card">
+            <h2 class="text-3xl font-semibold text-white mb-6">Certifications (GET Response)</h2>
+            <div id="get-response" class="space-y-4 text-gray-400">
+                <div class="flex justify-center items-center h-24">
+                    <svg class="animate-spin text-blue-400" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
 
-        <hr class="border-gray-200">
-
         <!-- Resume Section -->
-        <div>
-            <h2 class="text-2xl font-semibold text-gray-700 section-header">Download Resume</h2>
+        <div class="card">
+            <h2 class="text-3xl font-semibold text-white mb-6">Download Resume</h2>
             <div class="flex flex-col items-center space-y-4">
-                <button id="downloadResumeBtn" class="bg-blue-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                <button id="downloadResumeBtn" class="btn bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
                     Get Presigned URL for Resume
                 </button>
             </div>
         </div>
 
-        <hr class="border-gray-200">
-
         <!-- POST Request Section -->
-        <div>
-            <h2 class="text-2xl font-semibold text-gray-700 section-header">Say Hello (POST Request)</h2>
+        <div class="card">
+            <h2 class="text-3xl font-semibold text-white mb-6">Say Hello (POST Request)</h2>
             <form id="contactForm" class="flex flex-col gap-4 mt-4">
-                <input type="text" name="from_name" id="nameInput" placeholder="Your Name" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="email" name="from_email" id="emailInput" placeholder="Your Email" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <textarea name="message" id="messageInput" placeholder="Your Message" required rows="5" class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-                <button type="submit" id="sendBtn" class="bg-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+                <input type="text" name="name" id="nameInput" placeholder="Your Name" required class="p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="email" name="email" id="emailInput" placeholder="Your Email" required class="p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea name="message" id="messageInput" placeholder="Your Message" required rows="5" class="p-4 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <button type="submit" id="sendBtn" class="btn bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
                     Send Message
                 </button>
             </form>
-            <div id="post-response" class="mt-4 p-4 text-center text-gray-700 bg-gray-50 rounded-lg"></div>
+            <div id="post-response" class="mt-6 p-4 text-center text-gray-300 rounded-lg animate-fade-in"></div>
         </div>
     </div>
 
     <script>
+        // REPLACE THIS URL with your API Gateway endpoint URL
         const API_URL = "https://8j6p9789pl.execute-api.us-east-1.amazonaws.com/default/FirstLambdaFunction";
-
-        // IMPORTANT: You need to replace these with your own EmailJS keys
-        const YOUR_SERVICE_ID = 'service_z5121ve'; 
-        const YOUR_TEMPLATE_ID = 'template_0qd1nuw'; 
-        const YOUR_PUBLIC_KEY = 'QxkDrafj3Xqwf3krQ'; 
-
-        // Initialize EmailJS with your Public Key
-        emailjs.init({
-            publicKey: YOUR_PUBLIC_KEY,
-        });
 
         // GET Request to fetch certifications
         fetch(API_URL)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 const certs = data.certifications || [];
                 const container = document.getElementById("get-response");
@@ -87,25 +117,25 @@
                     return;
                 }
 
-                container.innerHTML = ""; // clear loading text
+                container.innerHTML = "";
                 
                 certs.forEach(cert => {
                     const certEl = document.createElement("div");
-                    certEl.className = "certification p-4 rounded-lg border border-gray-200 bg-white";
+                    certEl.className = "certification p-4 rounded-lg border border-gray-600 bg-gray-700 hover:bg-gray-800 transition-colors";
                     certEl.innerHTML = `
-                        <h3 class="text-lg font-bold text-gray-800"><a href="${cert.url}" target="_blank" rel="noopener" class="hover:text-blue-600">${cert.title}</a></h3>
-                        <p class="text-sm text-gray-500 mt-1"><strong>Issuer:</strong> ${cert.issuer}</p>
-                        <p class="text-sm text-gray-500"><strong>Date:</strong> ${cert.date}</p>
+                        <h3 class="text-lg font-bold text-white"><a href="${cert.url}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400">${cert.title}</a></h3>
+                        <p class="text-sm text-gray-400 mt-1"><strong>Issuer:</strong> ${cert.issuer}</p>
+                        <p class="text-sm text-gray-400"><strong>Date:</strong> ${cert.date}</p>
                     `;
                     container.appendChild(certEl);
                 });
             })
             .catch(error => {
                 console.error("GET Error:", error);
-                document.getElementById("get-response").textContent = "Failed to fetch certifications.";
+                document.getElementById("get-response").innerHTML = `<p class="text-center text-red-400">Failed to fetch certifications.</p>`;
             });
 
-        // POST Request to send contact form data with EmailJS
+        // POST Request for the contact form
         document.getElementById("contactForm").addEventListener("submit", function (e) {
             e.preventDefault();
             const responseDiv = document.getElementById("post-response");
@@ -113,33 +143,64 @@
 
             responseDiv.textContent = "Sending...";
             sendBtn.disabled = true;
-            
-            // Use EmailJS to send the form data
-            emailjs.sendForm(YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, this)
-                .then(() => {
-                    responseDiv.textContent = "Message sent successfully!";
-                    this.reset(); // Clear the form
-                })
-                .catch(error => {
-                    console.error("EmailJS Error:", error);
-                    responseDiv.textContent = "Failed to send message. Please try again later.";
-                })
-                .finally(() => {
-                    sendBtn.disabled = false;
-                });
+            sendBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending...
+            `;
+
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const message = document.getElementById('messageInput').value;
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                responseDiv.textContent = data.message || data.error;
+                if (data.message) {
+                    this.reset();
+                    responseDiv.className = "mt-6 p-4 text-center bg-green-700 rounded-lg animate-fade-in";
+                } else {
+                    responseDiv.className = "mt-6 p-4 text-center bg-red-700 rounded-lg animate-fade-in";
+                }
+            })
+            .catch(error => {
+                console.error("POST Error:", error);
+                responseDiv.textContent = "Failed to send message. Please try again later.";
+                responseDiv.className = "mt-6 p-4 text-center bg-red-700 rounded-lg animate-fade-in";
+            })
+            .finally(() => {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = "Send Message";
+                sendBtn.className = "btn bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105";
+            });
         });
 
         // Event listener for the resume button
         document.getElementById("downloadResumeBtn").addEventListener("click", function() {
-            // Show a loading state
             this.textContent = "Generating URL...";
             this.disabled = true;
 
             fetch(`${API_URL}/resume`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.resumeUrl) {
-                        // Open the URL in a new tab immediately
                         window.open(data.resumeUrl, '_blank');
                     } else {
                         throw new Error(data.error || "Failed to get URL");
@@ -150,7 +211,6 @@
                     alert("Failed to get resume link. Please check the console for details.");
                 })
                 .finally(() => {
-                    // Restore button state
                     this.textContent = "Get Presigned URL for Resume";
                     this.disabled = false;
                 });
