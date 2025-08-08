@@ -5,6 +5,7 @@
     <title>Lambda Interaction</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -50,9 +51,9 @@
         <div>
             <h2 class="text-2xl font-semibold text-gray-700 section-header">Say Hello (POST Request)</h2>
             <form id="contactForm" class="flex flex-col gap-4 mt-4">
-                <input type="text" name="name" id="nameInput" placeholder="Your Name" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="email" name="email" id="emailInput" placeholder="Your Email" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <textarea type="text" name="message" id="messageInput" placeholder="Your Message" required rows="5" class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                <input type="text" name="from_name" id="nameInput" placeholder="Your Name" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="email" name="from_email" id="emailInput" placeholder="Your Email" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea name="message" id="messageInput" placeholder="Your Message" required rows="5" class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
                 <button type="submit" id="sendBtn" class="bg-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
                     Send Message
                 </button>
@@ -63,6 +64,16 @@
 
     <script>
         const API_URL = "https://8j6p9789pl.execute-api.us-east-1.amazonaws.com/default/FirstLambdaFunction";
+
+        // IMPORTANT: You need to replace these with your own EmailJS keys
+        const YOUR_SERVICE_ID = 'service_z5121ve'; 
+        const YOUR_TEMPLATE_ID = 'template_0qd1nuw'; 
+        const YOUR_PUBLIC_KEY = 'QxkDrafj3Xqwf3krQ'; 
+
+        // Initialize EmailJS with your Public Key
+        emailjs.init({
+            publicKey: YOUR_PUBLIC_KEY,
+        });
 
         // GET Request to fetch certifications
         fetch(API_URL)
@@ -76,7 +87,7 @@
                     return;
                 }
 
-                container.innerHTML = "";
+                container.innerHTML = ""; // clear loading text
                 
                 certs.forEach(cert => {
                     const certEl = document.createElement("div");
@@ -94,7 +105,7 @@
                 document.getElementById("get-response").textContent = "Failed to fetch certifications.";
             });
 
-        // POST Request for the contact form
+        // POST Request to send contact form data with EmailJS
         document.getElementById("contactForm").addEventListener("submit", function (e) {
             e.preventDefault();
             const responseDiv = document.getElementById("post-response");
@@ -102,30 +113,20 @@
 
             responseDiv.textContent = "Sending...";
             sendBtn.disabled = true;
-
-            const name = document.getElementById('nameInput').value;
-            const email = document.getElementById('emailInput').value;
-            const message = document.getElementById('messageInput').value;
-
-            fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, message })
-            })
-            .then(response => response.json())
-            .then(data => {
-                responseDiv.textContent = data.message || data.error;
-                if (data.message) {
-                    this.reset();
-                }
-            })
-            .catch(error => {
-                console.error("POST Error:", error);
-                responseDiv.textContent = "Failed to send message. Please try again later.";
-            })
-            .finally(() => {
-                sendBtn.disabled = false;
-            });
+            
+            // Use EmailJS to send the form data
+            emailjs.sendForm(YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, this)
+                .then(() => {
+                    responseDiv.textContent = "Message sent successfully!";
+                    this.reset(); // Clear the form
+                })
+                .catch(error => {
+                    console.error("EmailJS Error:", error);
+                    responseDiv.textContent = "Failed to send message. Please try again later.";
+                })
+                .finally(() => {
+                    sendBtn.disabled = false;
+                });
         });
 
         // Event listener for the resume button
