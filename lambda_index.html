@@ -50,10 +50,10 @@
         <div>
             <h2 class="text-2xl font-semibold text-gray-700 section-header">Say Hello (POST Request)</h2>
             <form id="contactForm" class="flex flex-col gap-4 mt-4">
-                <input type="text" id="nameInput" placeholder="Your Name" required class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="email" id="emailInput" placeholder="Your Email" required class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <textarea id="messageInput" placeholder="Your Message" required rows="5" class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-                <button type="submit" class="bg-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+                <input type="text" name="name" id="nameInput" placeholder="Your Name" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="email" name="email" id="emailInput" placeholder="Your Email" required class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea type="text" name="message" id="messageInput" placeholder="Your Message" required rows="5" class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                <button type="submit" id="sendBtn" class="bg-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
                     Send Message
                 </button>
             </form>
@@ -63,7 +63,6 @@
 
     <script>
         const API_URL = "https://8j6p9789pl.execute-api.us-east-1.amazonaws.com/default/FirstLambdaFunction";
-        const API_URL_CONTACT = "https://8j6p9789pl.execute-api.us-east-1.amazonaws.com/default/FirstLambdaFunction/contact"; // <-- REPLACE THIS WITH YOUR NEW API GATEWAY URL
 
         // GET Request to fetch certifications
         fetch(API_URL)
@@ -77,7 +76,7 @@
                     return;
                 }
 
-                container.innerHTML = ""; // clear loading text
+                container.innerHTML = "";
                 
                 certs.forEach(cert => {
                     const certEl = document.createElement("div");
@@ -95,33 +94,37 @@
                 document.getElementById("get-response").textContent = "Failed to fetch certifications.";
             });
 
-        // POST Request to send contact form data
+        // POST Request for the contact form
         document.getElementById("contactForm").addEventListener("submit", function (e) {
             e.preventDefault();
-            const name = document.getElementById("nameInput").value;
-            const email = document.getElementById("emailInput").value;
-            const message = document.getElementById("messageInput").value;
+            const responseDiv = document.getElementById("post-response");
+            const sendBtn = document.getElementById("sendBtn");
 
-            document.getElementById("post-response").textContent = "Sending...";
-            
-            fetch(API_URL_CONTACT, {
+            responseDiv.textContent = "Sending...";
+            sendBtn.disabled = true;
+
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const message = document.getElementById('messageInput').value;
+
+            fetch(API_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    message: message
-                })
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message })
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("post-response").textContent = data.message;
+                responseDiv.textContent = data.message || data.error;
+                if (data.message) {
+                    this.reset();
+                }
             })
             .catch(error => {
                 console.error("POST Error:", error);
-                document.getElementById("post-response").textContent = "Failed to send.";
+                responseDiv.textContent = "Failed to send message. Please try again later.";
+            })
+            .finally(() => {
+                sendBtn.disabled = false;
             });
         });
 
